@@ -36,7 +36,8 @@ const titles: Record<string, string> = {
   '/partners': '협력기관 | 한국진로커리어센터',
   '/apply': '상담신청 | 한국진로커리어센터',
   '/notices': '공지·소식 | 한국진로커리어센터',
-  '/instructors': '강사매칭 | 한국진로커리어센터',
+  '/mentoring': '진로 멘토링 | 한국진로커리어센터',
+  '/instructors': '강사 매칭 | 한국진로커리어센터',
   '/contact': '오시는 길 | 한국진로커리어센터',
   '/job-info': '취업정보 | 한국진로커리어센터',
 };

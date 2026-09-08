@@ -1,17 +1,18 @@
-import { Calendar, Pin, ExternalLink, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Calendar, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 export default function Notices() {
+  const reducedMotion = useReducedMotion();
   const notices = [
     {
       id: 4,
       isPinned: true,
       category: '소식',
-      title: '2026년 채용박람회 성료',
-      date: '2026.09',
-      content: '2026 채용박람회에 참가하여 구직자들을 위한 맞춤형 진로 상담 및 취업 컨설팅을 성황리에 진행했습니다.',
-      url: '#',
+      title: '2026 성남시 청년 채용박람회',
+      date: '2026.09.17 (목) 13:00–17:00',
+      content: '성남종합스포츠센터 다목적체육관에서 열리는 청년 채용박람회입니다.',
+      url: '/images/news/jobfair20260917.jpg',
       images: ['/images/news/jobfair20260917.jpg']
     },
     {
@@ -46,16 +47,8 @@ export default function Notices() {
     }
   ];
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
   const item = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: reducedMotion ? 0 : 20 },
     show: { opacity: 1, y: 0 }
   };
 
@@ -64,12 +57,12 @@ export default function Notices() {
   const news = notices.filter(n => n.category === '언론보도');
 
   useEffect(() => {
-    if(posts.length === 0) return;
+    if (posts.length <= 1 || reducedMotion) return;
     const timer = setInterval(() => {
       setCurrentPoster((prev) => (prev + 1) % posts.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [posts.length]);
+  }, [posts.length, reducedMotion]);
 
   return (
     <div className="w-full bg-slate-50/50 font-sans min-h-screen pb-24">
@@ -81,28 +74,28 @@ export default function Notices() {
               이달의 주요 행사
             </span>
             <h1 className="text-3xl md:text-5xl font-black mb-4 tracking-tight break-keep">
-              2026 청년 글로벌 채용 박람회
+              2026 성남시 청년 채용박람회
             </h1>
             <p className="text-slate-300 text-lg md:text-xl font-medium mb-8 max-w-2xl break-keep">
-              국내외 우수 기업들과 함께하는 글로벌 커리어 패스. 지금 바로 사전 신청하고 성공적인 커리어의 첫 걸음을 내딛으세요.
+              9월 17일 성남종합스포츠센터 다목적체육관에서 채용면접, 현직자 멘토링과 다양한 부대행사를 만나보세요.
             </p>
-            <button className="px-6 py-3 bg-white text-[#0f2942] font-bold rounded-xl hover:bg-slate-100 transition-colors flex items-center gap-2">
-              자세히 보기 <ArrowRight className="w-5 h-5" />
-            </button>
+            <a href="/images/news/jobfair20260917.jpg" target="_blank" rel="noopener noreferrer" className="w-fit px-6 py-3 bg-white text-[#0f2942] font-bold rounded-xl hover:bg-slate-100 transition-colors flex items-center gap-2">
+              포스터 자세히 보기 <ArrowRight className="w-5 h-5" />
+            </a>
           </motion.div>
         </div>
-        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 100% 50%, white 0%, transparent 50%)' }}></div>
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none" ></div>
       </div>
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-          
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,45fr)_minmax(0,55fr)] gap-8 lg:gap-12">
+
           {/* LEFT: 대표 공모전/박람회 포스터 (단독) (approx 45%) */}
-          <div className="w-full lg:w-[45%] shrink-0 flex flex-col">
+          <div className="w-full min-w-0 flex flex-col">
             {posts.length > 0 && (
-              <motion.div 
+              <motion.div
                 key={posts[currentPoster].id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={reducedMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 flex flex-col h-full"
               >
@@ -114,12 +107,12 @@ export default function Notices() {
                   )}
                 </div>
 
-                <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 bg-slate-100 border border-slate-100 relative group">
+                <div className="w-full aspect-[1191/1684] rounded-2xl overflow-hidden mb-6 bg-slate-100 border border-slate-100 relative group">
                   {posts[currentPoster].images && posts[currentPoster].images[0] ? (
-                    <img 
-                      src={posts[currentPoster].images[0]} 
-                      alt="포스터" 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    <img
+                      src={posts[currentPoster].images[0]}
+                      alt="2026 성남시 청년 채용박람회 행사 안내 포스터"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-300">No Image</div>
@@ -132,14 +125,14 @@ export default function Notices() {
                   </h3>
                   <div className="flex items-center gap-2 text-slate-600 mb-6 font-medium">
                     <Calendar className="w-4 h-4" />
-                    <span>일정: {posts[currentPoster].date} | KCC 센터</span>
+                    <span>일정: {posts[currentPoster].date}</span>
                   </div>
-                  
-                  <div className="flex items-center justify-between border-t border-slate-100 pt-5">
+
+                  {posts.length > 1 && <div className="flex items-center justify-between border-t border-slate-100 pt-5">
                     <div></div>
-                    
+
                     <div className="flex items-center gap-3">
-                      <button 
+                      <button aria-label="이전 포스터"
                         onClick={() => setCurrentPoster(p => (p === 0 ? posts.length - 1 : p - 1))}
                         className="p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
                       >
@@ -148,21 +141,21 @@ export default function Notices() {
                       <span className="text-sm font-bold text-slate-500 tracking-widest">
                         <span className="text-slate-900">{currentPoster + 1}</span> / {posts.length}
                       </span>
-                      <button 
+                      <button aria-label="다음 포스터"
                         onClick={() => setCurrentPoster(p => (p + 1) % posts.length)}
                         className="p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
                     </div>
-                  </div>
+                  </div>}
                 </div>
               </motion.div>
             )}
           </div>
 
           {/* RIGHT: 프레스 & 뉴스 (앨범 갤러리 그리드) (approx 55%) */}
-          <div className="w-full lg:w-[55%] flex flex-col">
+          <div className="w-full min-w-0 flex flex-col">
             <div className="flex items-end justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -170,27 +163,27 @@ export default function Notices() {
                   최신 보도자료
                 </h2>
               </div>
-              <a href="#" className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors">전체보기 +</a>
+
             </div>
 
             <div className="grid sm:grid-cols-2 gap-5">
               {news.map((notice) => (
-                <motion.a 
+                <motion.a
                   href={notice.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  key={notice.id} 
+                  key={notice.id}
                   variants={item}
                   className="group bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 transition-all duration-300 hover:border-[#1e3a8a] hover:-translate-y-1 hover:shadow-lg flex flex-col h-full"
                 >
                   <div className="w-full aspect-video bg-slate-100 relative overflow-hidden">
                     {notice.images && notice.images[0] ? (
-                      <img 
-                        src={notice.images[0]} 
-                        alt="썸네일" 
-                        loading="lazy" 
-                        decoding="async" 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      <img
+                        src={notice.images[0]}
+                        alt={notice.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300">No Image</div>
@@ -207,9 +200,9 @@ export default function Notices() {
                     <p className="text-slate-500 text-sm leading-relaxed line-clamp-2 break-keep flex-1">
                       • {notice.content}
                     </p>
-                    
+
                     <div className="flex items-center text-[12px] text-slate-400 font-medium mt-4 pt-4 border-t border-slate-100">
-                      <span className="text-blue-600 font-bold">뉴스엔잡</span>
+                      <span className="text-blue-600 font-bold">{notice.url.includes("newsnjob.com") ? "뉴스엔잡" : "성남인사이트"}</span>
                       <span className="mx-2">|</span>
                       <span>{notice.date}</span>
                     </div>
