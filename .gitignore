@@ -9,3 +9,19 @@
 npm-debug.log*
 *.log
 *.tsbuildinfo
+
+# Generated output and local tooling
+/dist
+/AGENTS.md
+/CLAUDE.md
+/.codex
+/.agents
+/.claude
+/.gemini
+/.vscode
+/.idea
+/.playwright-cli
+/output
+/tmp
+/전달자료
+*.zip
