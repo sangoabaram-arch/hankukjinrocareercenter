@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, X } from "lucide-react";
-import { motion, type Variants, AnimatePresence } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export default function Home() {
-  const [showNoticeModal, setShowNoticeModal] = useState(true);
+  const noticeRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = noticeRef.current;
+    dialog?.showModal();
+    return () => dialog?.close();
+  }, []);
 
   // 일반 부드러운 스크롤 (자동 스크롤 비활성화)
   useEffect(() => {
@@ -42,47 +48,37 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full overflow-x-clip bg-white text-slate-900 font-sans relative">
-      {/* Notice Modal */}
-      <AnimatePresence>
-        {showNoticeModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl p-8 md:p-10 shadow-2xl max-w-[500px] w-full text-center relative border border-slate-100"
-            >
-              <button
-                onClick={() => setShowNoticeModal(false)}
-                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl">🛠️</span>
-              </div>
-              
-              <h2 className="text-2xl font-black text-slate-900 mb-4">안내 말씀드립니다</h2>
-              <div className="text-slate-600 leading-relaxed mb-8 break-keep">
-                <p className="font-bold text-slate-800 mb-2">현재 홈페이지 수정 중에 있습니다.</p>
-                <p>
-                  홈페이지 이용에 다소 불편함이 있더라도<br className="block sm:hidden" /> 양해 부탁드립니다.
-                </p>
-              </div>
-              
-              <button
-                onClick={() => setShowNoticeModal(false)}
-                className="w-full py-4 bg-[#1e3a8a] text-white font-bold rounded-xl hover:bg-[#0f2942] transition-colors"
-              >
-                확인
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
+    <div className="w-full overflow-x-clip bg-white text-slate-900 font-sans">
+      <dialog
+        ref={noticeRef}
+        aria-labelledby="maintenance-title"
+        aria-describedby="maintenance-description"
+        className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[500px] overflow-y-auto rounded-3xl border border-slate-100 bg-white p-8 text-center text-slate-900 shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm md:p-10"
+      >
+        <button
+          type="button"
+          aria-label="안내 닫기"
+          onClick={() => noticeRef.current?.close()}
+          className="absolute top-4 right-4 rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
+        >
+          <X className="h-6 w-6" />
+        </button>
+        <div aria-hidden="true" className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
+          <span className="text-3xl">🛠️</span>
+        </div>
+        <h2 id="maintenance-title" className="mb-4 text-2xl font-black">안내 말씀드립니다</h2>
+        <div id="maintenance-description" className="mb-8 break-keep leading-relaxed text-slate-600">
+          <p className="mb-2 font-bold text-slate-800">현재 홈페이지 수정 중에 있습니다.</p>
+          <p>홈페이지 이용에 다소 불편함이 있더라도<br className="block sm:hidden" /> 양해 부탁드립니다.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => noticeRef.current?.close()}
+          className="w-full rounded-xl bg-[#1e3a8a] py-4 font-bold text-white transition-colors hover:bg-[#0f2942]"
+        >
+          확인
+        </button>
+      </dialog>
       {/* Hero Section (Sticky Overlay) */}
       <section className="sticky top-0 w-full h-screen bg-white flex items-center justify-center overflow-hidden z-0">
         {/* 동적 배경 */}

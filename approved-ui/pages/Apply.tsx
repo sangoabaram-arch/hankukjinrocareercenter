@@ -216,7 +216,7 @@ export default function Apply() {
                   onChange={handleChange}
                   className="mt-1 w-4 h-4 rounded border-slate-300 text-[#1e3a8a] focus:ring-[#1e3a8a]" 
                 />
-                <div className="text-sm text-slate-600 flex-1">
+                <div className="text-sm text-slate-600 flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-2">
                     <label htmlFor="privacy" className="font-bold text-slate-900 cursor-pointer">
                       개인정보 수집 및 이용 동의 <span className="text-red-500">*</span>
@@ -256,4 +256,3 @@ export default function Apply() {
     </div>
   );
 }
-
