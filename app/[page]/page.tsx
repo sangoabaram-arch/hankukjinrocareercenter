@@ -7,6 +7,7 @@ const titles: Record<string, string> = {
   programs: "프로그램",
   partners: "협력기관",
   apply: "상담신청",
+  news: "공지·소식",
   notices: "공지·소식",
   instructors: "강사 매칭",
   mentoring: "진로 멘토링",

@@ -1,4 +1,5 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import ProgramPosters from '../components/ProgramPosters';
 import Header from '../components/Header';
 import ConsultationButton from '../components/ConsultationButton';
 const logoUrl = '/favicon.png';
@@ -11,6 +12,11 @@ export default function MainLayout() {
     <div className="flex flex-col min-h-screen font-sans bg-white text-slate-900">
       <Header />
       <main className={`flex-1 relative w-full ${isHome ? '' : 'pt-20 pb-16'}`}>
+        {location.pathname.startsWith('/programs/') && (
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-6 pt-4">
+            <ProgramPosters />
+          </div>
+        )}
         <Outlet />
       </main>
       

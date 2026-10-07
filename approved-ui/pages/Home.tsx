@@ -1,10 +1,49 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, X } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 
+const newestPosters = [
+    {
+      id: 1,
+      title: "구직자·재직자를 위한 ‘생성형 AI 활용’ 실무 과정 교육생 모집",
+      badge: "전액 무료 교육",
+      image: "/images/news/generative_ai_course.jpg",
+    },
+    {
+      id: 2,
+      title: "한국폴리텍대학 로봇캠퍼스 2027학년도 신입생 모집",
+      badge: "2027 신입생 모집",
+      image: "/images/news/polytech_robot_2027.png",
+    },
+  ];
+
 export default function Home() {
   const noticeRef = useRef<HTMLDialogElement>(null);
+  const [visiblePosters, setVisiblePosters] = useState<typeof newestPosters>([]);
+  const [hiddenTodayIds, setHiddenTodayIds] = useState<number[]>([]);
+
+  const showPosters = () => {
+    const today = new Date().toLocaleDateString("ko-KR");
+    setVisiblePosters(newestPosters.filter((poster) => {
+      try {
+        return localStorage.getItem(`poster-popup-hidden-${poster.id}`) !== today;
+      } catch {
+        return true;
+      }
+    }));
+  };
+
+  const dismissPoster = (posterId: number) => {
+    if (hiddenTodayIds.includes(posterId)) {
+      try {
+        localStorage.setItem(`poster-popup-hidden-${posterId}`, new Date().toLocaleDateString("ko-KR"));
+      } catch {
+        // Closing remains available when browser storage is disabled.
+      }
+    }
+    setVisiblePosters((posters) => posters.filter((poster) => poster.id !== posterId));
+  };
 
   useEffect(() => {
     const dialog = noticeRef.current;
@@ -51,6 +90,7 @@ export default function Home() {
     <div className="w-full overflow-x-clip bg-white text-slate-900 font-sans">
       <dialog
         ref={noticeRef}
+        onClose={showPosters}
         aria-labelledby="maintenance-title"
         aria-describedby="maintenance-description"
         className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[500px] overflow-y-auto rounded-3xl border border-slate-100 bg-white p-8 text-center text-slate-900 shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm md:p-10"
@@ -79,6 +119,51 @@ export default function Home() {
           확인
         </button>
       </dialog>
+
+        {visiblePosters.length > 0 && (
+          <div
+            aria-label="최신 모집 포스터"
+            data-lenis-prevent
+            className="fixed left-4 top-4 z-[90] grid max-h-[84dvh] w-[calc(100%-2rem)] max-w-[740px] items-start gap-4 overflow-y-auto sm:grid-cols-2 sm:gap-5"
+          >
+            {visiblePosters.map((poster) => (
+              <section
+                key={poster.id}
+                className="w-full max-w-[360px] min-w-0 overflow-hidden border border-slate-300 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.28)]"
+                aria-label={poster.title}
+              >
+                <img
+                  src={poster.image}
+                  alt={poster.title}
+                  className="max-h-[62vh] w-full bg-slate-100 object-contain sm:max-h-[68vh]"
+                />
+                <div className="flex min-h-10 items-center justify-between gap-2 border-t border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700">
+                  <label className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap">
+                    <input
+                      type="checkbox"
+                      checked={hiddenTodayIds.includes(poster.id)}
+                      onChange={(event) =>
+                        setHiddenTodayIds((ids) =>
+                          event.target.checked ? [...ids, poster.id] : ids.filter((id) => id !== poster.id),
+                        )
+                      }
+                      className="h-3.5 w-3.5 accent-slate-700"
+                    />
+                    하루 동안 창 열지 않음
+                  </label>
+                  <button
+                    aria-label={`${poster.title} 팝업 닫기`}
+                    onClick={() => dismissPoster(poster.id)}
+                    className="shrink-0 rounded border border-slate-300 px-2 py-0.5 text-xs text-slate-700 hover:bg-slate-100"
+                  >
+                    닫기
+                  </button>
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+
       {/* Hero Section (Sticky Overlay) */}
       <section className="sticky top-0 w-full h-screen bg-white flex items-center justify-center overflow-hidden z-0">
         {/* 동적 배경 */}
