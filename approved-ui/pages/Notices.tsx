@@ -407,7 +407,10 @@ export default function Notices() {
               </div>
 
               {visiblePosts.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                <div
+                  aria-label="공지 포스터. 좌우로 밀어 더 볼 수 있습니다."
+                  className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 touch-pan-x md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0"
+                >
                   {visiblePosts.map((post, idx) => (
                     <motion.button
                       key={post.id}
@@ -419,7 +422,7 @@ export default function Notices() {
                       initial={reducedMotion ? false : { opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: idx * 0.04 }}
-                      className={`group text-left overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 motion-safe:hover:-translate-y-1 hover:shadow-lg ${
+                      className={`group w-[84%] max-w-[360px] shrink-0 snap-start text-left overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 motion-safe:hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none md:shrink ${
                         activePosterIndex === idx
                           ? "border-cyan-300 ring-2 ring-cyan-100"
                           : "border-slate-200 hover:border-cyan-200"
